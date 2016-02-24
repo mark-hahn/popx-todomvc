@@ -1,5 +1,20 @@
 {
   "name": "popx-todomvx",
+  "description": "todomvc example web app using popx framework",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mark-hahn/popx-todomvc"
+  },
+  "keywords": [
+    "web app",
+    "todomvc",
+    "dataflow",
+    "reactive",
+    "javascript",
+    "popx"
+  ],
+  "author": "Mark Hahn <mark@hahnca.com>",
+  "license": "MIT",
   "dependencies": {
     "popx": "^0.1.1"
   }

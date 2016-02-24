@@ -11,17 +11,12 @@ app:
   repository:   mark-hahn/popx-todomvc
 
 modules:
-  # readFile:
-  #   path:      < body.html
-  #   out:       bodyTemplate
-     
-  # moustache:
-  #   model:     tasksModel
-  #   template:  bodyTemplate
-  #   out:       pageBody
-    
+
   tagInput: 
     name:      newTodoInp
     selector: .new-todo
     changeEvt: addTodo
     
+  log:
+    addTodo
+
