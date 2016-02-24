@@ -1,0 +1,6 @@
+{
+  "name": "popx-todomvx",
+  "dependencies": {
+    "popx": "^0.1.1"
+  }
+}
