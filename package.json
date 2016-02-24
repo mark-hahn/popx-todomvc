@@ -15,6 +15,10 @@
   ],
   "author": "Mark Hahn <mark@hahnca.com>",
   "license": "MIT",
+  "jshintConfig": {
+    "esversion": 6, 
+    "predef": [ "require", "module" ]
+  },
   "dependencies": {
     "popx": "^0.1.1"
   }
