@@ -10,10 +10,9 @@ app:
   repository:   mark-hahn/popx-todomvc
 
 modules:
-
   newTodoInp: 
     $module:   tagInput
-    selector: .new-todo
+    selector:  < .new-todo
     changed:   addTodo
 
   log:
