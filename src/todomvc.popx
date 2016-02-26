@@ -3,17 +3,16 @@
 
 app:
   name:         todomvc
-  version:      0.1.0
-  modified:     2016-02-23 14:05 -8
-  description:  A todomvc example for todomvc.com
+  description:  A popx todomvc example for todomvc.com
   author:       Mark Hahn <mark@hahnca.com>
   repository:   mark-hahn/popx-todomvc
 
 modules:
   newTodoInp: 
-    $module:   tagInput
+    $module:   stdlib/textInput
     selector:  < .new-todo
     changed:   addTodo
 
   log:
+    $module: stdlib/log
     addTodo:
