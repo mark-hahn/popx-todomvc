@@ -9,10 +9,10 @@ project:
 
 modules:
   # newTodoInp: 
-  #   $modType:   stdlib/textInput
+  #   $require:   $textInput
   #   selector:  < .new-todo
   #   changed:   addTodo
   # 
   log:
-    $require: log
+    $require: $log
     addTodo: < asdf
