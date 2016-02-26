@@ -1,5 +1,6 @@
 {
-  "name": "popx-todomvx",
+  "name": "popx-todomvc",
+  "version": "0.1.0",
   "description": "todomvc example web app using popx framework",
   "repository": {
     "type": "git",
