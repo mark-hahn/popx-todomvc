@@ -1,18 +1,18 @@
 
 # todomvc web app popx declaration
 
-app:
+project:
   name:         todomvc
   description:  A popx todomvc example for todomvc.com
   author:       Mark Hahn <mark@hahnca.com>
   repository:   mark-hahn/popx-todomvc
 
 modules:
-  newTodoInp: 
-    $module:   stdlib/textInput
-    selector:  < .new-todo
-    changed:   addTodo
-
+  # newTodoInp: 
+  #   $modType:   stdlib/textInput
+  #   selector:  < .new-todo
+  #   changed:   addTodo
+  # 
   log:
-    $module: stdlib/log
-    addTodo:
+    $require: log
+    addTodo: < asdf
