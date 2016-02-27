@@ -11,4 +11,4 @@ node /root/dev/apps/popx/compiler/popx.js -o js -bmp js/bundle.js src/todomvc.po
 # node-debug --nodejs --harmony /root/dev/apps/popx-todomvc/js/todomvc.js
 # node --harmony /root/dev/apps/popx-todomvc/js/todomvc.js
 
-# http-server . -p 1999 -o -r
+http-server . -p 1999 -o -r
