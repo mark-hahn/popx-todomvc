@@ -1,77 +1,87 @@
 
-# todomvc web app popx declaration
+# taskmvc web app popx declaration
 
 project:
-  name:         todomvc
-  description:  A popx todomvc example for todomvc.com
+  name:         taskmvc
+  description:  A popx taskmvc example for taskmvc.com
   author:       Mark Hahn <mark@hahnca.com>
-  repository:   mark-hahn/popx-todomvc
+  repository:   mark-hahn/popx-taskmvc
 
 modules:
+  # watch new task text input
   newTextInp: 
     $require:   $dom
-    $sel:       ["#new-todo"]
-    changeEvt:  newTodoLbl
-    $value:     newTodoLbl
+    $sel:       ["#new-task-inp"]
+    changeEvt:  newTaskLbl
+    $value:     newTaskLbl
     
-  newTodoItem:
+  # create new task instance
+  newTaskInst:
     $require:   $new
     $class:     [Object]
-    label:      newTodoLbl
+    label:      newTaskLbl
     done:       [false]
-    $instance:  todoItem
+    $instance:  taskItem
     
+  # turn task instance into DOM element
+  # uses moustache template from file
   newItemEle:
     $require:   $dom
     $op:        [createElement]
-    $model:     todoItem
-    $template:  [file,item.html]
-    $ele:       itemEle
-    
+    $model:     taskItem
+    $template:  [file, item.html]
+    $ele:       taskEle
+  
+  # add task ele to ele list (model)  
   addItemToList:
     $require:   $arrayOps
     $op:        [unshift]
-    $item:      itemEle
-    $array:     todoEles
+    $item:      taskEle
+    $array:     taskEles
     
+  # watch all task done checkbox inputs
   doneChkboxes:
     $require:   $dom
-    $ele:       todoEles
     $sel:       [.done-chkbox]
     $value:     itemChecked
     changeEvt:  itemChecked
     
+  # set class to checked if wire itemChecked is true
   showItemDone:
-    $require:   ./itemDone
-    $ele:       todoEles
-    $sel:       [.todo-item]
-    $done:      itemChecked
+    $require:   $dom
+    $sel:       [.task-item]
+    $class:     [checked, itemChecked]
       
+  # watch all delete buttons
   deleteBtns:
     $require:   $dom
-    $ele:       todoEles
     $sel:       [.del-btn]
     $evtTarget: deleteEle
     $clickEvt:  [deleteEle, delete] # del from DOM
-    
+  
+  # remove ele from task list on deleteEle event
   removeItem:
     $require:   $arrayOps
     $op:        [delete] # del from list
-    $item:      itemEle
-    $array:     todoEles
+    $trigger:   deleteEle
+    $item:      taskEle
+    $array:     taskEles
     
+  # create/add dom children and react to changes in list
   showList:
     $require:   $dom
-    $eleSel:    [#todo-list]
+    $sel:       [#task-list]
     $op:        [updateChildren]
-    $value:     todoEles
+    $value:     taskEles
   
+  # print changes to console for any wires listed
   log:
     $require:   $log
-    newTodoLbl:
-    todoItem:
-    itemEle:
+    newTaskLbl:
+    taskItem:
+    taskEle:
     itemChecked:
     deleteEle:
-    todoEles:
+    taskEles:
       
+  
