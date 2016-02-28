@@ -20,6 +20,8 @@
     "esversion": 6
   },
   "dependencies": {
-    "moment": "^2.11.2"
+    "moment": "^2.11.2",
+    "popx": "^0.1.0",
+    "popx-stdlib": "^0.1.0"
   }
 }

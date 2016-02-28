@@ -8,11 +8,13 @@ project:
   repository:   mark-hahn/popx-todomvc
 
 modules:
-  newTodoInp: 
-    $require:   $textInput
-    selector:  < .new-todo
-    change:    addTodo
+  # newTodoInp: 
+    # $require:   $textInput
+    # selector:  < .new-todo
+    # change:    addTodo
   
   log:
     $require: $log
-    addTodo:
+    # console:  < false
+    # path:     < a.log
+    addTodo: < 23

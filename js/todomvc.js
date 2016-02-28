@@ -3,7 +3,7 @@
   author: 'Mark Hahn <mark@hahnca.com>',
   repository: 'mark-hahn/popx-todomvc',
   file: 'src/todomvc.popx',
-  compiled: '2016-02-26 20:25:35' }*/
+  compiled: '2016-02-27 17:05:16' }*/
 
 var Popx = require('popx');
 
@@ -14,43 +14,26 @@ var moment = require('moment');
 var $log = null;
 (_=>{
   'use strict';
+  
   $log = class extends Popx {
     constructor (module) {
       super(module);
-      this.react( '*', (val, pinName, ext) => {
-        let line = `${moment().format().slice(0,-6).replace('T',' ')} 
-                    ${ext.event ? 'event' : 'value'}
-                    wire:${ext.wireName}, value:${util.inspect(val)}`
-                   .replace(/\s+/g, ' ').slice(0,100);
-        if (this.get('console').val !== false) console.log(line);
+      this.react( '*', (pinName, val, oldVal, sentFrom) => {
+        let line = valstr => `${moment().format().slice(0,-6).replace('T',' ')} 
+                              ${sentFrom.event ? 'event' : 'value'}
+                              wire:${sentFrom.wireName}, value:${valStr}
+                              -> module: ${this.module.name}, pin: ${pinName}`
+                              .replace(/\s+/g, ' ');
+        let valStr = util.inspect(val);
+        if (this.get('console').val !== false) {
+          console.log(line(valStr.replace(/\s+/g, ' ').slice(0,40)));
+        }
         let path = this.get('path').val;
-        if (path) fs.appendFileSync(path, line);
+        if (path) fs.appendFileSync(path, line(valStr)+'\n');
       });
     }
   };
-})();
-
-var $textInput = null;
-(_=>{
-  'use strict';
-  $textInput = class extends Popx {
-    constructor (module) {
-      super(module);
-      
-      this.react('selector', selector => {
-        if (this.changedListener) {
-          this.ele.removeEventListener('change', this.changedListener);
-          delete this.changedListener;
-        }
-        if (selector) {
-          this.ele = document.querySelector(selector);
-          this.changedListener = e => this.emit('change', e);
-          this.ele.addEventListener('change', this.changedListener);
-        }
-      });
-      
-    }
-  };
+  
 })();
 
 var $constant = null;
@@ -64,6 +47,7 @@ var $constant = null;
   };
 })();
 
-new($log)({"name":"log","type":"$log","pins":{"addTodo":"addTodo"}});
-new($textInput)({"name":"newTodoInp","type":"$textInput","pins":{"selector":"$const0","change":"addTodo"}});
-new($constant)({"name":"$const0","type":"$constant","state":".new-todo","pins":{"out":"$const0"}});
+var mods = [];
+mods.push(new($log)({"name":"log","type":"$log","pins":{"addTodo":"$const0"}}));
+mods.push(new($constant)({"name":"$const0","type":"$constant","state":23,"pins":{"out":"$const0"}}));
+Popx.runLoop(mods);
