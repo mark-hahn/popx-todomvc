@@ -8,13 +8,70 @@ project:
   repository:   mark-hahn/popx-todomvc
 
 modules:
-  # newTodoInp: 
-    # $require:   $textInput
-    # selector:  < .new-todo
-    # change:    addTodo
+  newTextInp: 
+    $require:   $dom
+    $sel:       ["#new-todo"]
+    changeEvt:  newTodoLbl
+    $value:     newTodoLbl
+    
+  newTodoItem:
+    $require:   $new
+    $class:     [Object]
+    label:      newTodoLbl
+    done:       [false]
+    $instance:  todoItem
+    
+  newItemEle:
+    $require:   $dom
+    $op:        [createElement]
+    $model:     todoItem
+    $template:  [file,item.html]
+    $ele:       itemEle
+    
+  addItemToList:
+    $require:   $arrayOps
+    $op:        [unshift]
+    $item:      itemEle
+    $array:     todoEles
+    
+  doneChkboxes:
+    $require:   $dom
+    $ele:       todoEles
+    $sel:       [.done-chkbox]
+    $value:     itemChecked
+    changeEvt:  itemChecked
+    
+  showItemDone:
+    $require:   ./itemDone
+    $ele:       todoEles
+    $sel:       [.todo-item]
+    $done:      itemChecked
+      
+  deleteBtns:
+    $require:   $dom
+    $ele:       todoEles
+    $sel:       [.del-btn]
+    $evtTarget: deleteEle
+    $clickEvt:  [deleteEle, delete] # del from DOM
+    
+  removeItem:
+    $require:   $arrayOps
+    $op:        [delete] # del from list
+    $item:      itemEle
+    $array:     todoEles
+    
+  showList:
+    $require:   $dom
+    $eleSel:    [#todo-list]
+    $op:        [updateChildren]
+    $value:     todoEles
   
   log:
-    $require: $log
-    # console:  < false
-    # path:     < a.log
-    addTodo: < 23
+    $require:   $log
+    newTodoLbl:
+    todoItem:
+    itemEle:
+    itemChecked:
+    deleteEle:
+    todoEles:
+      
