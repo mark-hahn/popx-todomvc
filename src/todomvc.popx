@@ -10,14 +10,14 @@ project:
 modules:
   # watch new task text input
   newTextInp: 
-    $require:   $dom
+    $module:    $dom
     $sel:       ["#new-task-inp"]
     changeEvt:  newTaskLbl
     $value:     newTaskLbl
     
   # create new task instance
   newTaskInst:
-    $require:   $new
+    $module:    $new
     $class:     [Object]
     label:      newTaskLbl
     done:       [false]
@@ -26,7 +26,7 @@ modules:
   # turn task instance into DOM element
   # uses moustache template from file
   newItemEle:
-    $require:   $dom
+    $module:    $dom
     $op:        [createElement]
     $model:     taskItem
     $template:  [file, item.html]
@@ -34,34 +34,34 @@ modules:
   
   # add task ele to ele list (model)  
   addItemToList:
-    $require:   $arrayOps
+    $module:    $arrayOps
     $op:        [unshift]
     $item:      taskEle
     $array:     taskEles
     
   # watch all task done checkbox inputs
   doneChkboxes:
-    $require:   $dom
+    $module:    $dom
     $sel:       [.done-chkbox]
     $value:     itemChecked
     changeEvt:  itemChecked
     
   # set class to checked if wire itemChecked is true
   showItemDone:
-    $require:   $dom
+    $module:    $dom
     $sel:       [.task-item]
     $class:     [checked, itemChecked]
       
   # watch all delete buttons
   deleteBtns:
-    $require:   $dom
+    $module:    $dom
     $sel:       [.del-btn]
     $evtTarget: deleteEle
-    $clickEvt:  [deleteEle, delete] # del from DOM
+    clickEvt:   [deleteEle, delete] # del from DOM
   
   # remove ele from task list on deleteEle event
   removeItem:
-    $require:   $arrayOps
+    $module:    $arrayOps
     $op:        [delete] # del from list
     $trigger:   deleteEle
     $item:      taskEle
@@ -69,14 +69,14 @@ modules:
     
   # create/add dom children and react to changes in list
   showList:
-    $require:   $dom
+    $module:    $dom
     $sel:       [#task-list]
     $op:        [updateChildren]
     $value:     taskEles
   
   # print changes to console for any wires listed
   log:
-    $require:   $log
+    $module:    $log
     newTaskLbl:
     taskItem:
     taskEle:
