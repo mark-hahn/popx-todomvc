@@ -70,7 +70,7 @@ modules:
   # create/add dom children and react to changes in list
   showList:
     $module:    $dom
-    $sel:       [#task-list]
+    $sel:       ["#task-list"]
     $op:        [updateChildren]
     $value:     taskEles
   
