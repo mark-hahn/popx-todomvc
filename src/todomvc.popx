@@ -11,21 +11,22 @@ modules:
   # watch new task text input
   newTaskTextInput: 
     $module:    $dom
+    $op:        [input]
     $sel:       ["#new-task-inp"]
-    $value:     newTaskText
     changeEvt:  newTaskText
-    
+  
   # create new task instance
   newTaskInst:
-    $module:    $new
-    $instance:  taskInst
+    $module:    $newObject
     text:       newTaskText
     done:       [false]
+    $instance:  taskInst
     
   # turn task instance into DOM element
   # uses moustache template from file
   newTaskEle:
     $module:    $dom
+    $op:        [createEle]
     $model:     taskInst
     $template:  [file, item.html]
     $ele:       newTaskEle
@@ -40,23 +41,24 @@ modules:
   # watch all task done checkbox inputs
   doneChkboxes:
     $module:    $dom
+    $op:        [input]
     $sel:       [.done-chkbox]
-    $ancestSel: {.task}
-    $ancestEle: itemCheckedEle
+    $ancestSel: [.task]
     $value:     itemChecked
     changeEvt:  itemChecked
     
   # set class to checked if wire itemChecked is true
   showItemDone:
     $module:    $dom
-    $ele:       itemCheckedEle
-    $classSet:  [checked, itemChecked]
+    $op:        [setClass]
+    $ele:       itemChecked
+    $class:     [checked]
       
   # watch all delete buttons
   deleteBtns:
     $module:    $dom
     $sel:       [.del-btn]
-    $ancestSel: {.task}
+    $ancestSel: [.task]
     $ancestEle: taskDeleteEle
     clickEvt:   taskDeleteEle
   

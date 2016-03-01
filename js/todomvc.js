@@ -3,7 +3,7 @@
   author: 'Mark Hahn <mark@hahnca.com>',
   repository: 'mark-hahn/popx-taskmvc',
   file: 'src/todomvc.popx',
-  compiled: '2016-02-28 16:14:00' }*/
+  compiled: '2016-02-29 17:17:45' }*/
 var Popx = require('popx');
 var $dom = null;
 (_=>{
@@ -97,15 +97,13 @@ this.react( '*', (pinName, val, oldVal, sentFrom) => {
     }
   };
 })();
-var mods = [];
-mods.push(new($dom)({"name":"newTextInp","type":"$dom","constants":{"$sel":"#new-task-inp"},"pins":{"changeEvt":"newTaskLbl","$value":"newTaskLbl"}}));
-mods.push(new($new)({"name":"newTaskInst","type":"$new","constants":{"$class":"Object","done":false},"pins":{"label":"newTaskLbl","$instance":"taskItem"}}));
-mods.push(new($dom)({"name":"newItemEle","type":"$dom","constants":{"$op":"createElement","$template":"file"},"pins":{"$model":"taskItem","$ele":"taskEle"}}));
-mods.push(new($arrayOps)({"name":"addItemToList","type":"$arrayOps","constants":{"$op":"unshift"},"pins":{"$item":"taskEle","$array":"taskEles"}}));
-mods.push(new($dom)({"name":"doneChkboxes","type":"$dom","constants":{"$sel":".done-chkbox"},"pins":{"$value":"itemChecked","changeEvt":"itemChecked"}}));
-mods.push(new($dom)({"name":"showItemDone","type":"$dom","constants":{"$sel":".task-item","$class":"checked"},"pins":{}}));
-mods.push(new($dom)({"name":"deleteBtns","type":"$dom","constants":{"$sel":".del-btn","clickEvt":"deleteEle"},"pins":{"$evtTarget":"deleteEle"}}));
-mods.push(new($arrayOps)({"name":"removeItem","type":"$arrayOps","constants":{"$op":"delete"},"pins":{"$trigger":"deleteEle","$item":"taskEle","$array":"taskEles"}}));
-mods.push(new($dom)({"name":"showList","type":"$dom","constants":{"$sel":"#task-list","$op":"updateChildren"},"pins":{"$value":"taskEles"}}));
-mods.push(new($log)({"name":"log","type":"$log","pins":{"newTaskLbl":"newTaskLbl","taskItem":"taskItem","taskEle":"taskEle","itemChecked":"itemChecked","deleteEle":"deleteEle","taskEles":"taskEles"}}));
-Popx.runLoop(mods);
+mods.push(new($dom)({"name":"newTaskTextInput","type":"$dom","wireByPin":{"$value":"newTaskText","changeEvt":"newTaskText"},"constByPin":{"$sel":"#new-task-inp"}}));
+mods.push(new($new)({"name":"newTaskInst","type":"$new","wireByPin":{"$instance":"taskInst","text":"newTaskText"},"constByPin":{"done":false}}));
+mods.push(new($dom)({"name":"newTaskEle","type":"$dom","wireByPin":{"$model":"taskInst","$ele":"newTaskEle"},"constByPin":{"$template":"file"}}));
+mods.push(new($arrayOps)({"name":"addItemToList","type":"$arrayOps","wireByPin":{"$item":"newTaskEle","$array":"taskEleList"},"constByPin":{"$op":"unshift"}}));
+mods.push(new($dom)({"name":"doneChkboxes","type":"$dom","wireByPin":{"$ancestEle":"itemCheckedEle","$value":"itemChecked","changeEvt":"itemChecked"},"constByPin":{"$sel":".done-chkbox","$ancestSel":".task"}}));
+mods.push(new($dom)({"name":"showItemDone","type":"$dom","wireByPin":{"$ele":"itemCheckedEle"},"constByPin":{"$classSet":"checked"}}));
+mods.push(new($dom)({"name":"deleteBtns","type":"$dom","wireByPin":{"$ancestEle":"taskDeleteEle","clickEvt":"taskDeleteEle"},"constByPin":{"$sel":".del-btn","$ancestSel":".task"}}));
+mods.push(new($arrayOps)({"name":"removeItem","type":"$arrayOps","wireByPin":{"$item":"taskDeleteEle","$array":"taskEleList"},"constByPin":{"$op":"delete"}}));
+mods.push(new($dom)({"name":"showList","type":"$dom","wireByPin":{"$children":"taskEleList"},"constByPin":{"$ele":"#task-list"}}));
+mods.push(new($log)({"name":"log","type":"$log","wireByPin":{"newTaskText":"newTaskText","taskInst":"taskInst","newTaskEle":"newTaskEle","taskDeleteEle":"taskDeleteEle","taskEleList":"taskEleList","itemCheckedEle":"itemCheckedEle","itemChecked":"itemChecked"},"constByPin":{}}));
