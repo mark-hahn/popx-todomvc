@@ -42,25 +42,27 @@ modules:
   doneChkboxes:
     $module:    $dom
     $op:        [input]
+    $evtDest:   ["#task-list"]
     $sel:       [.done-chkbox]
     $ancestSel: [.task]
-    $value:     itemChecked
-    changeEvt:  itemChecked
+    $ancestEle: checkTask
+    $value:     taskCheckVal
     
   # set class to checked if wire itemChecked is true
   showItemDone:
     $module:    $dom
     $op:        [setClass]
-    $ele:       itemChecked
-    $class:     [checked]
-      
+    $ele:       checkTask
+    $if:        taskCheckVal
+    $class:     [done]
+
   # watch all delete buttons
   deleteBtns:
     $module:    $dom
     $sel:       [.del-btn]
     $ancestSel: [.task]
-    $ancestEle: taskDeleteEle
-    clickEvt:   taskDeleteEle
+    $ancestEle: delTask
+    clickEvt:   taskDeleteEvt
   
   # remove task ele from task list on deleteEle event
   removeItem:
