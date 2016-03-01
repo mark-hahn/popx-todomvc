@@ -9,79 +9,78 @@ project:
 
 modules:
   # watch new task text input
-  newTextInp: 
+  newTaskTextInput: 
     $module:    $dom
     $sel:       ["#new-task-inp"]
-    changeEvt:  newTaskLbl
-    $value:     newTaskLbl
+    $value:     newTaskText
+    changeEvt:  newTaskText
     
   # create new task instance
   newTaskInst:
     $module:    $new
-    $class:     [Object]
-    label:      newTaskLbl
+    $instance:  taskInst
+    text:       newTaskText
     done:       [false]
-    $instance:  taskItem
     
   # turn task instance into DOM element
   # uses moustache template from file
-  newItemEle:
+  newTaskEle:
     $module:    $dom
-    $op:        [createElement]
-    $model:     taskItem
+    $model:     taskInst
     $template:  [file, item.html]
-    $ele:       taskEle
+    $ele:       newTaskEle
   
   # add task ele to ele list (model)  
   addItemToList:
     $module:    $arrayOps
     $op:        [unshift]
-    $item:      taskEle
-    $array:     taskEles
+    $item:      newTaskEle
+    $array:     taskEleList
     
   # watch all task done checkbox inputs
   doneChkboxes:
     $module:    $dom
     $sel:       [.done-chkbox]
+    $ancestSel: {.task}
+    $ancestEle: itemCheckedEle
     $value:     itemChecked
     changeEvt:  itemChecked
     
   # set class to checked if wire itemChecked is true
   showItemDone:
     $module:    $dom
-    $sel:       [.task-item]
-    $class:     [checked, itemChecked]
+    $ele:       itemCheckedEle
+    $classSet:  [checked, itemChecked]
       
   # watch all delete buttons
   deleteBtns:
     $module:    $dom
     $sel:       [.del-btn]
-    $evtTarget: deleteEle
-    clickEvt:   [deleteEle, delete] # del from DOM
+    $ancestSel: {.task}
+    $ancestEle: taskDeleteEle
+    clickEvt:   taskDeleteEle
   
-  # remove ele from task list on deleteEle event
+  # remove task ele from task list on deleteEle event
   removeItem:
     $module:    $arrayOps
-    $op:        [delete] # del from list
-    $trigger:   deleteEle
-    $item:      taskEle
-    $array:     taskEles
+    $op:        [delete]
+    $item:      taskDeleteEle
+    $array:     taskEleList
     
-  # create/add dom children and react to changes in list
+  # create/add task list to dom and react to changes
   showList:
     $module:    $dom
-    $sel:       ["#task-list"]
-    $op:        [updateChildren]
-    $value:     taskEles
+    $ele:       ["#task-list"]
+    $children:  taskEleList
   
   # print changes to console for any wires listed
   log:
     $module:    $log
-    newTaskLbl:
-    taskItem:
-    taskEle:
+    newTaskText:
+    taskInst:
+    newTaskEle:
+    taskDeleteEle:  
+    taskEleList:
+    itemCheckedEle:
     itemChecked:
-    deleteEle:
-    taskEles:
-      
-  
+    
