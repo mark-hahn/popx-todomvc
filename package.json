@@ -17,10 +17,12 @@
   "author": "Mark Hahn <mark@hahnca.com>",
   "license": "MIT",
   "jshintConfig": {
-    "esversion": 6
+    "esversion": 6,
+    "loopfunc": true
   },
   "dependencies": {
     "moment": "^2.11.2",
+    "mustache": "^2.2.1",
     "popx": "^0.1.0",
     "popx-stdlib": "^0.1.0"
   }

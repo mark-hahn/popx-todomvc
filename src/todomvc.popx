@@ -10,14 +10,14 @@ project:
 modules:
   # watch new task text input
   newTaskTextInput: 
-    $module:    $dom
+    $module:    [$dom]
     $op:        [input]
-    $sel:       ["#new-task-inp"]
+    $sel:       [".new-todo"]
     changeEvt:  newTaskText
   
   # create new task instance
   newTaskInst:
-    $module:    $newObject
+    $module:    [$newObject]
     $instance:  taskInst
     text:       newTaskText
     done:       [false]
@@ -25,7 +25,7 @@ modules:
   # turn task instance into DOM element
   # uses moustache template from file
   newTaskEle:
-    $module:    $dom
+    $module:    [$dom]
     $op:        [createEle]
     $model:     taskInst
     $template:  [file, item.html]
@@ -33,21 +33,21 @@ modules:
   
   # add task ele to ele list (model)  
   addItemToList:
-    $module:    $arrayOps
+    $module:    [$arrayOps]
     $op:        [unshift]
     $item:      newTaskEle
     $array:     taskEleList
     
   # watch all task done checkbox inputs
   doneChkboxes:
-    $module:    $dom
+    $module:    [$dom]
     $op:        [input]
     $sel:       [".done-chkbox", "#task-list"]
     $value:     taskCheckVals
     
   # set class to done if wire taskCheckVals is true
   showItemDone:
-    $module:    $dom
+    $module:    [$dom]
     $op:        [setClass]
     $sel:       taskEleList
     $if:        taskCheckVals
@@ -55,7 +55,7 @@ modules:
 
   # watch all delete buttons
   deleteBtns:
-    $module:    $dom
+    $module:    [$dom]
     $op:        [input]
     $sel:       [".del-btn", "#task-list"]
     $evtValSel: [".task"]
@@ -63,20 +63,20 @@ modules:
   
   # remove task ele from task list on deleteEle event
   removeItem:
-    $module:    $arrayOps
+    $module:    [$arrayOps]
     $op:        [remove]
     $item:      taskDeleteEvt
     $array:     taskEleList
     
   # create/add task list to dom and react to changes
   showList:
-    $module:    $dom
+    $module:    [$dom]
     $op:        [attach]
-    $ele:       ["#task-list"]
+    $parent:    ["body"]
     $children:  taskEleList
   
   # print changes to console for any wires listed
   log:
-    $module:    $log
-    $allWires:  true
+    $module:    [$log]
+    $allWires:  [true]
     
