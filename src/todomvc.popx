@@ -18,9 +18,9 @@ modules:
   # create new task instance
   newTaskInst:
     $module:    $newObject
+    $instance:  taskInst
     text:       newTaskText
     done:       [false]
-    $instance:  taskInst
     
   # turn task instance into DOM element
   # uses moustache template from file
@@ -42,49 +42,41 @@ modules:
   doneChkboxes:
     $module:    $dom
     $op:        [input]
-    $evtDest:   ["#task-list"]
-    $sel:       [.done-chkbox]
-    $ancestSel: [.task]
-    $ancestEle: checkTask
-    $value:     taskCheckVal
+    $sel:       [".done-chkbox", "#task-list"]
+    $value:     taskCheckVals
     
-  # set class to checked if wire itemChecked is true
+  # set class to done if wire taskCheckVals is true
   showItemDone:
     $module:    $dom
     $op:        [setClass]
-    $ele:       checkTask
-    $if:        taskCheckVal
+    $sel:       taskEleList
+    $if:        taskCheckVals
     $class:     [done]
 
   # watch all delete buttons
   deleteBtns:
     $module:    $dom
-    $sel:       [.del-btn]
-    $ancestSel: [.task]
-    $ancestEle: delTask
+    $op:        [input]
+    $sel:       [".del-btn", "#task-list"]
+    $evtValSel: [".task"]
     clickEvt:   taskDeleteEvt
   
   # remove task ele from task list on deleteEle event
   removeItem:
     $module:    $arrayOps
-    $op:        [delete]
-    $item:      taskDeleteEle
+    $op:        [remove]
+    $item:      taskDeleteEvt
     $array:     taskEleList
     
   # create/add task list to dom and react to changes
   showList:
     $module:    $dom
+    $op:        [attach]
     $ele:       ["#task-list"]
     $children:  taskEleList
   
   # print changes to console for any wires listed
   log:
     $module:    $log
-    newTaskText:
-    taskInst:
-    newTaskEle:
-    taskDeleteEle:  
-    taskEleList:
-    itemCheckedEle:
-    itemChecked:
+    $allWires:  true
     
