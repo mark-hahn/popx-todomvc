@@ -18,18 +18,18 @@ modules:
   # create new task instance
   newTaskInst:
     $module:    [$newObject]
-    $instance:  taskInst
     text:       newTaskText
     done:       [false]
+    $newObjEvt: taskObj
     
   # turn task instance into DOM element
   # uses moustache template from file
   newTaskEle:
     $module:    [$dom]
     $op:        [createEle]
-    $model:     taskInst
+    $model:     taskObj
     $template:  [file, item.html]
-    $ele:       newTaskEle
+    $eleEvt:    newTaskEle
   
   # add task ele to ele list (model)  
   addItemToList:
@@ -71,7 +71,7 @@ modules:
   # create/add task list to dom and react to changes
   showList:
     $module:    [$dom]
-    $op:        [attach]
+    $op:        [setChildren]
     $parent:    ["body"]
     $children:  taskEleList
   

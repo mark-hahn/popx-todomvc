@@ -1,4 +1,6 @@
 
+set -e
+
 # echo "compile todomvc.popx with no debug"
 # node --harmony /root/dev/apps/popx/compiler/popx.js -co js src/todomvc.popx
 

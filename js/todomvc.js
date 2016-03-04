@@ -3,7 +3,7 @@
   author: 'Mark Hahn <mark@hahnca.com>',
   repository: 'mark-hahn/popx-taskmvc',
   file: 'src/todomvc.popx',
-  compiled: '2016-03-03 12:44:25' }*/
+  compiled: '2016-03-03 20:24:50' }*/
 var Popx = require('popx');
 var $dom = null;
 (_=>{
@@ -90,7 +90,7 @@ switch(this.get('$op')) {
         else html = template;
       }
       if (html) ele.innerHTML = html;
-      this.emit('$ele', ele, {model});
+      this.emit('$eleEvt', ele, {model});
     });
     break;
   case 'setClass':
@@ -106,12 +106,11 @@ switch(this.get('$op')) {
       }
     });
     break;
-  case 'attach':
+  case 'setChildren':
     let parents = getEles(this.get('$parent')).eles;
     let parent = parents[0];
-    this.react('$children', 'value', (args) => {
+    this.react('$children', 'value', (_, children) => {
       while (parent.firstChild) parent.removeChild(parent.firstChild);
-      let children = this.get('$children');
       if(!Array.isArray(children)) children = [children];
       for (let child of children) parent.appendChild(child);
     });
@@ -131,8 +130,9 @@ var $newObject = null;
 this.react('*', 'event', (pinName, data, meta) => {
   let instance = {};
   for (let instancePinName of this.getInstancePins())
-      instance[instancePinName] = this.get(instancePinName);
-  this.emit('$instance', instance);
+      instance[instancePinName] = 
+          (instancePinName === pinName ? data : this.get(instancePinName));
+  this.emit('$newObjEvt', instance);
 });
     }
   };
@@ -144,16 +144,18 @@ var $arrayOps = null;
     constructor (module) {
       super(module);
 this.react('$item', 'event', (pinName, data, meta) => {
-  let arrayValue = this.get('$array');
+  let arrayValue = this.get('$array') || {data:[],meta:{}};
   switch (this.get('$op')) {
     case 'unshift': 
       arrayValue.data = this.setFrozenAttr(arrayValue.data, 'unshift', data); 
       break;
     case 'remove': 
       let index = array.indexOf(arrayValue.data);
+      if (index === -1) return;
       arrayValue.data = this.setFrozenAttr(arrayValue.data, [index]); 
       break;
   }
+  this.set('$array', arrayValue.data, arrayValue.meta);
 });
     }
   };
@@ -167,7 +169,7 @@ var $log = null;
 let fs     = require('fs');
 let util   = require('util');
 let moment = require('moment');
-let pinNames = (this.get('$allWires') ? '**' : '*');
+let pinNames = (this.get('$allWires') ? '***' : '**');
 this.react(pinNames, null, (pinName, data, meta) => {
   let line = `${moment().format().slice(0,-6).replace('T',' ')} 
               ${meta.sentFrom.pinName}(${meta.sentFrom.module}) 
@@ -185,12 +187,12 @@ this.react(pinNames, null, (pinName, data, meta) => {
   };
 })();
 new($dom)({"name":"newTaskTextInput","type":"$dom","wireByPin":{"changeEvt":"newTaskText"},"constByPin":{"$op":"input","$sel":".new-todo"}});
-new($newObject)({"name":"newTaskInst","type":"$newObject","wireByPin":{"$instance":"taskInst","text":"newTaskText"},"constByPin":{"done":false}});
-new($dom)({"name":"newTaskEle","type":"$dom","wireByPin":{"$model":"taskInst","$ele":"newTaskEle"},"constByPin":{"$op":"createEle"}});
+new($newObject)({"name":"newTaskInst","type":"$newObject","wireByPin":{"text":"newTaskText","$newObjEvt":"taskObj"},"constByPin":{"done":false}});
+new($dom)({"name":"newTaskEle","type":"$dom","wireByPin":{"$model":"taskObj","$eleEvt":"newTaskEle"},"constByPin":{"$op":"createEle","$template":"\nhello world\n"}});
 new($arrayOps)({"name":"addItemToList","type":"$arrayOps","wireByPin":{"$item":"newTaskEle","$array":"taskEleList"},"constByPin":{"$op":"unshift"}});
 new($dom)({"name":"doneChkboxes","type":"$dom","wireByPin":{"$value":"taskCheckVals"},"constByPin":{"$op":"input","$sel":[".done-chkbox","#task-list"]}});
 new($dom)({"name":"showItemDone","type":"$dom","wireByPin":{"$sel":"taskEleList","$if":"taskCheckVals"},"constByPin":{"$op":"setClass","$class":"done"}});
 new($dom)({"name":"deleteBtns","type":"$dom","wireByPin":{"clickEvt":"taskDeleteEvt"},"constByPin":{"$op":"input","$sel":[".del-btn","#task-list"],"$evtValSel":".task"}});
 new($arrayOps)({"name":"removeItem","type":"$arrayOps","wireByPin":{"$item":"taskDeleteEvt","$array":"taskEleList"},"constByPin":{"$op":"remove"}});
-new($dom)({"name":"showList","type":"$dom","wireByPin":{"$children":"taskEleList"},"constByPin":{"$op":"attach","$parent":"body"}});
+new($dom)({"name":"showList","type":"$dom","wireByPin":{"$children":"taskEleList"},"constByPin":{"$op":"setChildren","$parent":"body"}});
 new($log)({"name":"log","type":"$log","wireByPin":{},"constByPin":{"$allWires":true}});
