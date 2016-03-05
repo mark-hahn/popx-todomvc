@@ -1,9 +1,9 @@
-/*{ name: 'taskmvc',
-  description: 'A popx taskmvc example for taskmvc.com',
+/*{ name: 'todomvc',
+  description: 'A popx todomvc example for todomvc.com',
   author: 'Mark Hahn <mark@hahnca.com>',
-  repository: 'mark-hahn/popx-taskmvc',
+  repository: 'mark-hahn/popx-todomvc',
   file: 'src/todomvc.popx',
-  compiled: '2016-03-03 20:24:50' }*/
+  compiled: '2016-03-03 20:47:08' }*/
 var Popx = require('popx');
 var $dom = null;
 (_=>{
@@ -24,9 +24,12 @@ let closest = (ele, sel) => {
 };
 let getEles = (sel) => {
   if (sel instanceof Element) return {eles:[sel]};
-  if (!Array.isArray(sel)) sel = [sel];
-  if (sel[0] instanceof Element) return {eles:sel};
-  let containerSel = sel[1];
+  let containerSel;
+  if (Array.isArray(sel)) {
+    if (sel[0] instanceof Element) return {eles:sel};
+    containerSel = sel[1];
+    sel = sel[0];
+  }
   let container = (containerSel ? document.querySelector(containerSel) : null);
   let eles = (container ? container : document).querySelectorAll(sel);
   return {container, eles};

@@ -1,11 +1,11 @@
 
-# taskmvc web app popx declaration
+# todomvc web app popx declaration
 
 project:
-  name:         taskmvc
-  description:  A popx taskmvc example for taskmvc.com
+  name:         todomvc
+  description:  A popx todomvc example for todomvc.com
   author:       Mark Hahn <mark@hahnca.com>
-  repository:   mark-hahn/popx-taskmvc
+  repository:   mark-hahn/popx-todomvc
 
 modules:
   # watch new task text input
@@ -20,37 +20,28 @@ modules:
     $module:    [$newObject]
     text:       newTaskText
     done:       [false]
-    $newObjEvt: taskObj
+    $newObjEvt: newTaskObj
     
-  # turn task instance into DOM element
-  # uses moustache template from file
-  newTaskEle:
-    $module:    [$dom]
-    $op:        [createEle]
-    $model:     taskObj
-    $template:  [file, item.html]
-    $eleEvt:    newTaskEle
-  
-  # add task ele to ele list (model)  
+  # add task obj to list (model)  
   addItemToList:
     $module:    [$arrayOps]
     $op:        [unshift]
-    $item:      newTaskEle
-    $array:     taskEleList
+    $item:      newTaskObj
+    $array:     taskList
     
   # watch all task done checkbox inputs
   doneChkboxes:
     $module:    [$dom]
     $op:        [input]
     $sel:       [".done-chkbox", "#task-list"]
-    $value:     taskCheckVals
+    $value:     taskChecks
     
   # set class to done if wire taskCheckVals is true
   showItemDone:
     $module:    [$dom]
     $op:        [setClass]
-    $sel:       taskEleList
-    $if:        taskCheckVals
+    $sel:       [".task", "#task-list"]
+    $if:        taskChecks
     $class:     [done]
 
   # watch all delete buttons
@@ -66,14 +57,22 @@ modules:
     $module:    [$arrayOps]
     $op:        [remove]
     $item:      taskDeleteEvt
-    $array:     taskEleList
+    $array:     taskList
+
+  # render model into elements using mustache template
+  renderTaskList:
+    $module:    [$dom]
+    $op:        [createEle]
+    $model:     taskList
+    $template:  [file, item.html]
+    $eleEvt:    taskList  
     
   # create/add task list to dom and react to changes
   showList:
     $module:    [$dom]
     $op:        [setChildren]
     $parent:    ["body"]
-    $children:  taskEleList
+    $children:  taskList
   
   # print changes to console for any wires listed
   log:
