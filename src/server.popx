@@ -1,0 +1,45 @@
+
+
+module:
+  $name:      server
+  $descr:     A popx todomvc example node server
+
+modules:
+  # watch incoming port for http requests
+  httpServer:
+    $module:    [$http]
+    $op:        [server]
+    $port:      [8081]
+    $req>:      httpReq>
+    $res<:      <httpRes
+
+  # create/open page based on url
+  pageRouter:  
+    $module:    [$router]
+    $req<:      httpReq>
+    $res>:      <httpRes
+    $table:     routerTable
+    todomvUrl:  ["/"]
+    todomvHtm:  [../html/todomvc.html]
+    logUrl:     ["/log"]
+    logHtm:     [../html/log-page.html]
+
+  # home page for app
+  todomvcPage:
+    $module:    [todomvc]
+    $location:  [client]
+    $taskList:  tasklist
+    
+  # page to show log of changes for all wires in app
+  logPage:
+    $module:    ["log-page"]
+    $location:  [client]
+
+  # write/watch task list file on server
+  taskListDB:  
+    $module:    [$fs]
+    $op:        [fileIOWatch]
+    $path:      [../data/task-list.json]
+    $write<:    <taskList
+    $watch>:    taskList>
+    

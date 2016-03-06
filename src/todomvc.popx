@@ -1,32 +1,36 @@
 
-# todomvc web app popx declaration
+# todomvc web page popx module
 
-project:
-  name:         todomvc
-  description:  A popx todomvc example for todomvc.com
-  author:       Mark Hahn <mark@hahnca.com>
-  repository:   mark-hahn/popx-todomvc
+module:
+  $name:        todomvc
+  description:  A popx todomvc example webpage
 
 modules:
+  
+  # interface to parent popx server module
+  server:
+    $module:    [$IO]
+    $taskList:  taskList
+    
   # watch new task text input
   newTaskTextInput: 
     $module:    [$dom]
     $op:        [input]
     $sel:       [".new-todo"]
-    changeEvt:  newTaskText
+    change>:    newTaskText>
   
   # create new task instance
   newTaskInst:
     $module:    [$newObject]
-    text:       newTaskText
     done:       [false]
-    $newObjEvt: newTaskObj
+    text<:      <newTaskText
+    $newObj>:   newTaskObj>
     
   # add task obj to list (model)  
   addItemToList:
     $module:    [$arrayOps]
     $op:        [unshift]
-    $item:      newTaskObj
+    $item<:     <newTaskObj
     $array:     taskList
     
   # watch all task done checkbox inputs
@@ -50,13 +54,13 @@ modules:
     $op:        [input]
     $sel:       [".del-btn", "#task-list"]
     $evtValSel: [".task"]
-    clickEvt:   taskDeleteEvt
+    click>:     taskDeleteEvt>
   
   # remove task ele from task list on deleteEle event
   removeItem:
     $module:    [$arrayOps]
     $op:        [remove]
-    $item:      taskDeleteEvt
+    $item<:     <taskDeleteEvt
     $array:     taskList
 
   # render model into elements using mustache template
@@ -65,17 +69,12 @@ modules:
     $op:        [createEle]
     $model:     taskList
     $template:  [file, item.html]
-    $eleEvt:    taskList  
+    $ele:       taskEleList  
     
   # create/add task list to dom and react to changes
   showList:
     $module:    [$dom]
     $op:        [setChildren]
     $parent:    ["body"]
-    $children:  taskList
+    $children:  taskEleList
   
-  # print changes to console for any wires listed
-  log:
-    $module:    [$log]
-    $allWires:  [true]
-    

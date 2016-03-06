@@ -1,0 +1,20 @@
+
+module:
+  name:         logModule
+  description:  Web page that logs all wires in app
+  
+modules:
+  
+  # interface to parent popx server module
+  logPage:
+    $module:    [$http]
+    $op:        [client]
+    $template:  [log-page.html]
+    $req>:      reqRes>
+    $res<:      <reqRes
+
+  # print changes to console for all wires in app
+  log:
+    $module:    [$log]
+    $scope:     [app]
+    
