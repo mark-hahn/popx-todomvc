@@ -1,10 +1,37 @@
-/*{ name: 'todomvc',
-  description: 'A popx todomvc example for todomvc.com',
-  author: 'Mark Hahn <mark@hahnca.com>',
-  repository: 'mark-hahn/popx-todomvc',
-  file: 'src/todomvc.popx',
-  compiled: '2016-03-03 20:47:08' }*/
+
 var Popx = require('popx');
+var $http = null;
+(_=>{
+  'use strict';
+  $http = class extends Popx {
+    constructor (module) {
+      super(module);
+const http = require('http');
+let resByReqId = {};
+let reqId = 0;
+switch(this.get('$op')) {
+  case 'server':
+    const hostname = this.get('$host') || '127.0.0.1';
+    const port = this.get('$port') || 8080;
+    http.createServer((req, res) => {
+      resByReqId[++reqId] = res;
+      this.emit('$req', null, 
+          {reqId, reqUrl: req.url, reqHdrs: req.headers, reqMethod: req.method});
+    }).listen(port, hostname, _=> {
+      this.log(`Server running at http://${hostname}:${port}/`);
+    });
+    this.react('$res', (_, data, meta) => {
+      let res = resByReqId[meta.reqId];
+      res.writeHead(meta.resCode || 200, meta.hdrs || {'Content-Type': 'text/plain' });
+      res.end(data);
+    });
+    break;
+  default: 
+    utils.fatal(`invalid $op "${this.get('$op')}" for $http module ${this.module.name}`);
+}
+    }
+  };
+})();
 var $dom = null;
 (_=>{
   'use strict';
@@ -163,39 +190,13 @@ this.react('$item', 'event', (pinName, data, meta) => {
     }
   };
 })();
-var $log = null;
-(_=>{
-  'use strict';
-  $log = class extends Popx {
-    constructor (module) {
-      super(module);
-let fs     = require('fs');
-let util   = require('util');
-let moment = require('moment');
-let pinNames = (this.get('$allWires') ? '***' : '**');
-this.react(pinNames, null, (pinName, data, meta) => {
-  let line = `${moment().format().slice(0,-6).replace('T',' ')} 
-              ${meta.sentFrom.pinName}(${meta.sentFrom.module}) 
-              ${meta.isEvent ? 'event' : ''}
-              ->
-              ${meta.sentFrom.wireName}: ${util.inspect(data)}`
-              .replace(/\s+/g, ' ');
-  if (this.get('$console') !== false) {
-    console.log(line.slice(0,100));
-  }
-  let path = this.get('$path');
-  if (path && Popx.inNode()) fs.appendFileSync(path, line + '\n');
-});
-    }
-  };
-})();
-new($dom)({"name":"newTaskTextInput","type":"$dom","wireByPin":{"changeEvt":"newTaskText"},"constByPin":{"$op":"input","$sel":".new-todo"}});
-new($newObject)({"name":"newTaskInst","type":"$newObject","wireByPin":{"text":"newTaskText","$newObjEvt":"taskObj"},"constByPin":{"done":false}});
-new($dom)({"name":"newTaskEle","type":"$dom","wireByPin":{"$model":"taskObj","$eleEvt":"newTaskEle"},"constByPin":{"$op":"createEle","$template":"\nhello world\n"}});
-new($arrayOps)({"name":"addItemToList","type":"$arrayOps","wireByPin":{"$item":"newTaskEle","$array":"taskEleList"},"constByPin":{"$op":"unshift"}});
-new($dom)({"name":"doneChkboxes","type":"$dom","wireByPin":{"$value":"taskCheckVals"},"constByPin":{"$op":"input","$sel":[".done-chkbox","#task-list"]}});
-new($dom)({"name":"showItemDone","type":"$dom","wireByPin":{"$sel":"taskEleList","$if":"taskCheckVals"},"constByPin":{"$op":"setClass","$class":"done"}});
-new($dom)({"name":"deleteBtns","type":"$dom","wireByPin":{"clickEvt":"taskDeleteEvt"},"constByPin":{"$op":"input","$sel":[".del-btn","#task-list"],"$evtValSel":".task"}});
-new($arrayOps)({"name":"removeItem","type":"$arrayOps","wireByPin":{"$item":"taskDeleteEvt","$array":"taskEleList"},"constByPin":{"$op":"remove"}});
-new($dom)({"name":"showList","type":"$dom","wireByPin":{"$children":"taskEleList"},"constByPin":{"$op":"setChildren","$parent":"body"}});
-new($log)({"name":"log","type":"$log","wireByPin":{},"constByPin":{"$allWires":true}});
+new($http)({"name":"httpServer","type":"$http","wireByPin":{"$req":"httpReq>","$res":"<httpRes"},"constByPin":{"$module":"$http","$op":"server","$port":8081}});
+new($dom)({"name":"newTaskTextInput","type":"$dom","wireByPin":{"change":"todomvcPage:newTaskText>"},"constByPin":{"$module":"$dom","$op":"input","$sel":".new-todo"}});
+new($newObject)({"name":"newTaskInst","type":"$newObject","wireByPin":{"text":"todomvcPage:<newTaskText","$newObj":"todomvcPage:newTaskObj>"},"constByPin":{"$module":"$newObject","done":false}});
+new($arrayOps)({"name":"addItemToList","type":"$arrayOps","wireByPin":{"$item":"todomvcPage:<newTaskObj","$array":"tasklist"},"constByPin":{"$module":"$arrayOps","$op":"unshift"}});
+new($dom)({"name":"doneChkboxes","type":"$dom","wireByPin":{"$value":"todomvcPage:taskChecks"},"constByPin":{"$module":"$dom","$op":"input","$sel":[".done-chkbox","#task-list"]}});
+new($dom)({"name":"showItemDone","type":"$dom","wireByPin":{"$if":"todomvcPage:taskChecks"},"constByPin":{"$module":"$dom","$op":"setClass","$sel":[".task","#task-list"],"$class":"done"}});
+new($dom)({"name":"deleteBtns","type":"$dom","wireByPin":{"click":"todomvcPage:taskDeleteEvt>"},"constByPin":{"$module":"$dom","$op":"input","$sel":[".del-btn","#task-list"],"$evtValSel":".task"}});
+new($arrayOps)({"name":"removeItem","type":"$arrayOps","wireByPin":{"$item":"todomvcPage:<taskDeleteEvt","$array":"tasklist"},"constByPin":{"$module":"$arrayOps","$op":"remove"}});
+new($dom)({"name":"renderTaskList","type":"$dom","wireByPin":{"$model":"tasklist","$ele":"todomvcPage:taskEleList"},"constByPin":{"$module":"$dom","$op":"createEle","$template":"\nhello world\n"}});
+new($dom)({"name":"showList","type":"$dom","wireByPin":{"$children":"todomvcPage:taskEleList"},"constByPin":{"$module":"$dom","$op":"setChildren","$parent":"body"}});

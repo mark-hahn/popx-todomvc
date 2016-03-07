@@ -14,32 +14,30 @@ modules:
     $res<:      <httpRes
 
   # create/open page based on url
-  pageRouter:  
-    $module:    [$router]
-    $req<:      httpReq>
-    $res>:      <httpRes
-    $table:     routerTable
-    todomvUrl:  ["/"]
-    todomvHtm:  [../html/todomvc.html]
-    logUrl:     ["/log"]
-    logHtm:     [../html/log-page.html]
+  # pageRouter:
+  #   $module:    [$router]
+  #   $req<:      httpReq>
+  #   $res>:      <httpRes
+  #   $table:     routerTable
+  #   todomvUrl:  ["/"]
+  #   todomvHtm:  [../html/todomvc.html]
+  #   logUrl:     ["/log"]
+  #   logHtm:     [../html/log-page.html]
 
   # home page for app
   todomvcPage:
-    $module:    [todomvc]
-    $location:  [client]
+    $module:    [src/todomvc]
     $taskList:  tasklist
     
   # page to show log of changes for all wires in app
-  logPage:
-    $module:    ["log-page"]
-    $location:  [client]
+  # logPage:
+  #   $module:    ["src/log-page"]
 
   # write/watch task list file on server
-  taskListDB:  
-    $module:    [$fs]
-    $op:        [fileIOWatch]
-    $path:      [../data/task-list.json]
-    $write<:    <taskList
-    $watch>:    taskList>
+  # taskListDB:  
+  #   $module:    [$fs]
+  #   $op:        [fileIOWatch]
+  #   $path:      [../data/task-list.json]
+  #   $write<:    <taskList
+  #   $watch>:    taskList>
     
