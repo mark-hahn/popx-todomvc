@@ -13,7 +13,7 @@
 				<h1>todos</h1>
 				<input class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" v-model="newTodo" @keyup.enter="addTodo">
 			</header>
-			<!-- <section class="main" v-show="todos.length" v-cloak>
+			<section class="main" v-show="todos.length" v-cloak>
 				<input class="toggle-all" type="checkbox" v-model="allDone">
 				<ul class="todo-list">
 					<li class="todo" v-for="todo in filteredTodos" :class="{completed: todo.completed, editing: todo == editedTodo}">
@@ -39,7 +39,7 @@
 					Clear completed
 				</button>
 			</footer>
-		</section> -->
+		</section>
     <footer class="info">
       <p>Double-click to edit a todo</p>
       <p>   Popx repo is <a href="https://github.com/mark-hahn/popx/blob/master/README.md">here</a>.

@@ -7,74 +7,62 @@ module:
 
 modules:
   
-  # interface to parent popx server module
+  # interface to parent, popx server
   server:
-    $module:    [$IO]
-    $taskList:  taskList
-    
-  # watch new task text input
-  newTaskTextInput: 
+    $module:     [$IO]
+    taskList:    taskList
+
+  # register new task text event
+  newTask:    
     $module:    [$dom]
-    $op:        [input]
-    $sel:       [".new-todo"]
-    change>:    newTaskText>
-  
+    $ele:       [.new-todo]
+    $event:     [change]
+    $emit:      newTaskText->
+
   # create new task instance
-  newTaskInst:
-    $module:    [$newObject]
+  newTaskObj:
+    $module:    [$object]
+    text:     <-newTaskText
     done:       [false]
-    text<:      <newTaskText
-    $newObj>:   newTaskObj>
+    $emit:      newTaskObj->
     
+  doneChkbox:    
+    $module:    [$dom]
+    $ele:       [.todo .done-ckbox]
+    $event:     [change]
+    $value:     [closest(.todo)]
+    $emit:      doneChg->
+
+  # register delete events on individual tasks
+  delBtn:    
+    $module:   [$dom]
+    $ele:      [.todo .delete-btn]
+    $event:    [click]
+    $listener: [.todo-list]
+    $value:    [model(closest(.todo))]
+    $emit:     delTaskObj->
+
   # add task obj to list (model)  
-  addItemToList:
-    $module:    [$arrayOps]
-    $op:        [unshift]
-    $item<:     <newTaskObj
+  taskListArray:
+    $module:    [$array]
     $array:     taskList
-    
-  # watch all task done checkbox inputs
-  doneChkboxes:
+    $unshift: <-newTaskObj
+    $remove:  <-delTaskObj
+    $length:    taskListLen
+
+  # set class to done if trigger checkbox is checked
+  setDoneClass:
     $module:    [$dom]
-    $op:        [input]
-    $sel:       [".done-chkbox", "#task-list"]
-    $value:     taskChecks
-    
-  # set class to done if wire taskCheckVals is true
-  showItemDone:
-    $module:    [$dom]
-    $op:        [setClass]
-    $sel:       [".task", "#task-list"]
-    $if:        taskChecks
+    $ele:     <-doneChg
+    $if:        [ele(.done-ckbox:checked)]
     $class:     [done]
 
-  # watch all delete buttons
-  deleteBtns:
+  # attach model to DOM
+  pageDom:
     $module:    [$dom]
-    $op:        [input]
-    $sel:       [".del-btn", "#task-list"]
-    $evtValSel: [".task"]
-    click>:     taskDeleteEvt>
-  
-  # remove task ele from task list on deleteEle event
-  removeItem:
-    $module:    [$arrayOps]
-    $op:        [remove]
-    $item<:     <taskDeleteEvt
-    $array:     taskList
+    $links:
+      .todo-list:                  taskListLen
+      .todo:                       taskList
+      ".todo label::after":        $item.text
+      ".todo .done-ckbox:checked": $item.done
 
-  # render model into elements using mustache template
-  renderTaskList:
-    $module:    [$dom]
-    $op:        [createEle]
-    $model:     taskList
-    $template:  [file, item.html]
-    $ele:       taskEleList  
-    
-  # create/add task list to dom and react to changes
-  showList:
-    $module:    [$dom]
-    $op:        [setChildren]
-    $parent:    ["body"]
-    $children:  taskEleList
-  

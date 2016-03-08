@@ -190,13 +190,13 @@ this.react('$item', 'event', (pinName, data, meta) => {
     }
   };
 })();
-new($http)({"name":"httpServer","type":"$http","wireByPin":{"$req":"httpReq>","$res":"<httpRes"},"constByPin":{"$module":"$http","$op":"server","$port":8081}});
-new($dom)({"name":"newTaskTextInput","type":"$dom","wireByPin":{"change":"todomvcPage:newTaskText>"},"constByPin":{"$module":"$dom","$op":"input","$sel":".new-todo"}});
-new($newObject)({"name":"newTaskInst","type":"$newObject","wireByPin":{"text":"todomvcPage:<newTaskText","$newObj":"todomvcPage:newTaskObj>"},"constByPin":{"$module":"$newObject","done":false}});
-new($arrayOps)({"name":"addItemToList","type":"$arrayOps","wireByPin":{"$item":"todomvcPage:<newTaskObj","$array":"tasklist"},"constByPin":{"$module":"$arrayOps","$op":"unshift"}});
-new($dom)({"name":"doneChkboxes","type":"$dom","wireByPin":{"$value":"todomvcPage:taskChecks"},"constByPin":{"$module":"$dom","$op":"input","$sel":[".done-chkbox","#task-list"]}});
-new($dom)({"name":"showItemDone","type":"$dom","wireByPin":{"$if":"todomvcPage:taskChecks"},"constByPin":{"$module":"$dom","$op":"setClass","$sel":[".task","#task-list"],"$class":"done"}});
-new($dom)({"name":"deleteBtns","type":"$dom","wireByPin":{"click":"todomvcPage:taskDeleteEvt>"},"constByPin":{"$module":"$dom","$op":"input","$sel":[".del-btn","#task-list"],"$evtValSel":".task"}});
-new($arrayOps)({"name":"removeItem","type":"$arrayOps","wireByPin":{"$item":"todomvcPage:<taskDeleteEvt","$array":"tasklist"},"constByPin":{"$module":"$arrayOps","$op":"remove"}});
-new($dom)({"name":"renderTaskList","type":"$dom","wireByPin":{"$model":"tasklist","$ele":"todomvcPage:taskEleList"},"constByPin":{"$module":"$dom","$op":"createEle","$template":"\nhello world\n"}});
-new($dom)({"name":"showList","type":"$dom","wireByPin":{"$children":"todomvcPage:taskEleList"},"constByPin":{"$module":"$dom","$op":"setChildren","$parent":"body"}});
+new($http)({"name":"httpServer","type":"$http","wireByPin":{"$req":"httpReq","$res":"httpRes"},"constByPin":{"$op":"server","$port":8081}});
+new($dom)({"name":"newTaskTextInput","type":"$dom","wireByPin":{"change":"todomvcPage:newTaskText"},"constByPin":{"$op":"input","$sel":".new-todo"}});
+new($newObject)({"name":"newTaskInst","type":"$newObject","wireByPin":{"text":"todomvcPage:newTaskText","$newObj":"todomvcPage:newTaskObj"},"constByPin":{"done":false}});
+new($arrayOps)({"name":"addItemToList","type":"$arrayOps","wireByPin":{"$item":"todomvcPage:newTaskObj","$array":"tasklist"},"constByPin":{"$op":"unshift"}});
+new($dom)({"name":"doneChkboxes","type":"$dom","wireByPin":{"$value":"todomvcPage:taskChecks"},"constByPin":{"$op":"input","$sel":[".done-chkbox","#task-list"]}});
+new($dom)({"name":"showItemDone","type":"$dom","wireByPin":{"$if":"todomvcPage:taskChecks"},"constByPin":{"$op":"setClass","$sel":[".task","#task-list"],"$class":"done"}});
+new($dom)({"name":"deleteBtns","type":"$dom","wireByPin":{"click":"todomvcPage:taskDeleteEvt"},"constByPin":{"$op":"input","$sel":[".del-btn","#task-list"],"$evtValSel":".task"}});
+new($arrayOps)({"name":"removeItem","type":"$arrayOps","wireByPin":{"$item":"todomvcPage:taskDeleteEvt","$array":"tasklist"},"constByPin":{"$op":"remove"}});
+new($dom)({"name":"renderTaskList","type":"$dom","wireByPin":{"$model":"tasklist","$ele":"todomvcPage:taskEleList"},"constByPin":{"$op":"createEle","$template":"\nhello world\n"}});
+new($dom)({"name":"showList","type":"$dom","wireByPin":{"$children":"todomvcPage:taskEleList"},"constByPin":{"$op":"setChildren","$parent":"body"}});

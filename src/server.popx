@@ -1,43 +1,44 @@
 
 
-module:
-  $name:      server
-  $descr:     A popx todomvc example node server
+this:
+  name:      server
+  descr:     A popx todomvc example node server
 
 modules:
   # watch incoming port for http requests
   httpServer:
-    $module:    [$http]
-    $op:        [server]
-    $port:      [8081]
-    $req>:      httpReq>
-    $res<:      <httpRes
+    module: [http]
+    pins:
+      $op:   [server]
+      $port: [8081]
+      $req:   httpReq->
+      $res: <-httpRes
 
   # create/open page based on url
-  # pageRouter:
-  #   $module:    [$router]
-  #   $req<:      httpReq>
-  #   $res>:      <httpRes
-  #   $table:     routerTable
-  #   todomvUrl:  ["/"]
-  #   todomvHtm:  [../html/todomvc.html]
-  #   logUrl:     ["/log"]
-  #   logHtm:     [../html/log-page.html]
+  webpages:
+    module:  [router]
+    pins:
+      $req:     <-httpReq
+      $res:       httpRes->
+      $state:   routerState
+      homePage:   
+        url:      ['/']
+        html:     [html/todomvc.html]
+        script:   todomvc
 
-  # home page for app
+  # home page for app - runs in browser
   todomvcPage:
-    $module:    [src/todomvc]
-    $taskList:  tasklist
-    
-  # page to show log of changes for all wires in app
-  # logPage:
-  #   $module:    ["src/log-page"]
+    module: [src/todomvc]
+    jsOut:  todomvc
+    pins:
+      $taskList:  tasklist
 
   # write/watch task list file on server
-  # taskListDB:  
-  #   $module:    [$fs]
-  #   $op:        [fileIOWatch]
-  #   $path:      [../data/task-list.json]
-  #   $write<:    <taskList
-  #   $watch>:    taskList>
+  taskListDB:  
+    module: [$fs]
+    pins:
+      $op:    [fileIOWatch]
+      $path:  [../data/task-list.json]
+      $write: taskList
+      $watch: taskList
     
